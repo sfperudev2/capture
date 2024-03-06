@@ -206,12 +206,15 @@ func NewRecorderHandler(srv *CaptureService, next http.HandlerFunc) http.Handler
 		rw.Write(resBody)
 
 		// Save req and res data.
-
+		var queryParams = r.URL.Query().Encode()
+		if queryParams != "" {
+			queryParams = fmt.Sprintf("?%s", queryParams)
+		}
 		req := Req{
 			Proto:  r.Proto,
 			Method: r.Method,
 			Url:    r.URL.String(),
-			Path:   r.URL.Path,
+			Path:   r.URL.Path + queryParams,
 			Header: r.Header,
 			Body:   reqBody.Bytes(),
 		}
