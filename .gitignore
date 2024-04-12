@@ -3,3 +3,4 @@ debug
 debug.test
 *.exe
 capture
+build/
