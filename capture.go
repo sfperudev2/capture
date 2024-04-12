@@ -27,12 +27,15 @@ type Capture struct {
 }
 
 type Req struct {
-	Proto  string
-	Method string
-	Url    string
-	Path   string
-	Header http.Header
-	Body   []byte
+	Proto      string
+	Method     string
+	Url        string
+	Path       string
+	FullPath   string
+	Header     http.Header
+	Body       []byte
+	RemoteAddr string
+	Host       string
 }
 
 type Res struct {

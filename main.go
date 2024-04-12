@@ -211,12 +211,15 @@ func NewRecorderHandler(srv *CaptureService, next http.HandlerFunc) http.Handler
 			queryParams = fmt.Sprintf("?%s", queryParams)
 		}
 		req := Req{
-			Proto:  r.Proto,
-			Method: r.Method,
-			Url:    r.URL.String(),
-			Path:   r.URL.Path + queryParams,
-			Header: r.Header,
-			Body:   reqBody.Bytes(),
+			Proto:      r.Proto,
+			Method:     r.Method,
+			Url:        r.URL.String(),
+			Path:       r.URL.Path,
+			FullPath:   r.URL.Path + queryParams,
+			Header:     r.Header,
+			Body:       reqBody.Bytes(),
+			RemoteAddr: r.RemoteAddr,
+			Host:       r.Host,
 		}
 		res := Res{
 			Proto:  rec.Result().Proto,
@@ -250,7 +253,13 @@ func dump(c *Capture) CaptureInfo {
 	req := c.Req
 	res := c.Res
 	return CaptureInfo{
-		Request:  dumpContent(req.Header, req.Body, "%s %s %s\n\n", req.Method, req.Path, req.Proto),
+		Request: dumpContent(req.Header, req.Body, "%s %s \n%s\n%s\n%s\n\n",
+			req.Method,
+			req.FullPath,
+			req.Proto,
+			fmt.Sprint("Host:", req.Host),
+			fmt.Sprint("RemoteAddr:", req.RemoteAddr),
+		),
 		Response: dumpContent(res.Header, res.Body, "%s %s\n\n", res.Proto, res.Status),
 		Curl:     dumpCurl(req),
 	}
